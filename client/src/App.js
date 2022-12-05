@@ -10,7 +10,7 @@ function App() {
       <div className="App">
         <ToastContainer position="top-center" />
         <Routes>
-          <Route exact path="/" component={Home} />
+          <Route path="/" element={<Home />} />
         </Routes>
       </div>
     </BrowserRouter>

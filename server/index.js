@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/api/GET", (req, res) => {
+app.get("/api/get", (req, res) => {
   const sqlGet = "SELECT * FROM contact_db";
   db.query(sqlGet, (error, result) => {
     res.send(result);
