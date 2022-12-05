@@ -45,6 +45,16 @@ app.post("/api/post", (req, res) => {
   });
 });
 
+app.delete("/api/remove/:id", (req, res) => {
+  const { id } = req.params;
+  const sqlRemove = "DELETE FROM contact_db WHERE id = ?";
+  db.query(sqlRemove, id, (error, result) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+});
+
 app.listen(5000, () => {
   console.log("server is running on port 5000");
 });
