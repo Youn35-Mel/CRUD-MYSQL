@@ -3,6 +3,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const mysql = require("mysql2");
 const cors = require("cors");
+const { application } = require("express");
 
 const db = mysql.createPool({
   host: "localhost",
@@ -31,6 +32,17 @@ app.get("/", (req, res) => {
   //     console.log("result", result);
   //     res.send("hi express");
   //   });
+});
+
+app.post("/api/post", (req, res) => {
+  const { name, email, contact } = req.body;
+  const sqlInsert =
+    "INSERT INTO contact_db (name, email, contact) VALUES (?,?,?)";
+  db.query(sqlInsert, [name, email, contact], (error, result) => {
+    if (error) {
+      console.log(error);
+    }
+  });
 });
 
 app.listen(5000, () => {
