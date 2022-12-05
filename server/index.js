@@ -55,6 +55,29 @@ app.delete("/api/remove/:id", (req, res) => {
   });
 });
 
+app.get("/api/get/:id", (req, res) => {
+  const { id } = req.params;
+  const sqlGet = "SELECT * FROM contact_db WHERE id=?";
+  db.query(sqlGet, id, (error, result) => {
+    if (error) {
+      console.log(error);
+    }
+    res.send(result);
+  });
+});
+
+app.put("/api/update/:id", (req, res) => {
+  const { id } = req.params;
+  const { name, email, contact } = req.body;
+  const sqlEdit =
+    "UPDATE contact_db SET name = ?, email = ?, contact = ? WHERE id = ?";
+  db.query(sqlEdit, [name, email, contact, id], (error, result) => {
+    if (error) {
+      console.log(error);
+    }
+  });
+});
+
 app.listen(5000, () => {
   console.log("server is running on port 5000");
 });

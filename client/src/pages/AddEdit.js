@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -14,28 +14,54 @@ const AddEdit = () => {
   const { name, email, contact } = state;
 
   const navigate = useNavigate();
+  const { id } = useParams();
+
+  useEffect(() => {
+    axios.get(`http://localhost:5000/api/get/${id}`).then((response) => {
+      setState({ ...response.data[0] });
+    });
+  }, [id]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name || !email || !contact) {
       toast.error("please provide value into each input field ");
     } else {
-      axios
-        .post("http://localhost:5000/api/post", {
-          name,
-          email,
-          contact,
-        })
-        .then(() => {
-          setState({ name: "", email: "", contact: "" });
-        })
-        .catch((err) => {
-          toast.error(err.response.data);
+      if (!id) {
+        axios
+          .post("http://localhost:5000/api/post", {
+            name,
+            email,
+            contact,
+          })
+          .then(() => {
+            setState({ name: "", email: "", contact: "" });
+          })
+          .catch((err) => {
+            toast.error(err.response.data);
+          });
+        setTimeout(() => {
+          toast.success("contact added successfully");
+          navigate("/");
         });
-      setTimeout(() => {
-        toast.success("contact added successfully");
-        navigate("/");
-      });
+      } else {
+        axios
+          .put(`http://localhost:5000/api/update/${id}`, {
+            name,
+            email,
+            contact,
+          })
+          .then(() => {
+            setState({ name: "", email: "", contact: "" });
+          })
+          .catch((err) => {
+            toast.error(err.response.data);
+          });
+        setTimeout(() => {
+          toast.success("contact added successfully");
+          navigate("/");
+        });
+      }
     }
   };
 
@@ -59,7 +85,7 @@ const AddEdit = () => {
           id="name"
           name="name"
           placeholder="Your Name ..."
-          value={name}
+          value={name || ""}
           onChange={handleInputChange}
         />
         <label>Email</label>
@@ -68,7 +94,7 @@ const AddEdit = () => {
           id="email"
           name="email"
           placeholder="Your Email ..."
-          value={email}
+          value={email || ""}
           onChange={handleInputChange}
         />
         <label>Contact</label>
@@ -77,10 +103,10 @@ const AddEdit = () => {
           id="contact"
           name="contact"
           placeholder="Your Contact No..."
-          value={contact}
+          value={contact || ""}
           onChange={handleInputChange}
         />
-        <input type="submit" value="save" />
+        <input type="submit" value={id ? "Update" : "Save"} />
         <Link to="/">
           <input type="button" value="go back" />
         </Link>
